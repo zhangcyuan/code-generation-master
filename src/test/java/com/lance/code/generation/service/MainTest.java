@@ -21,7 +21,7 @@ public class MainTest {
 	public void main() {
 		long startTime = System.currentTimeMillis();
 		logger.info("...........start application.........");
-		//所有表
+		//开始执行
 		tableService.run();
 		logger.info("...end application...Time: {}",(System.currentTimeMillis()-startTime));
 	}
