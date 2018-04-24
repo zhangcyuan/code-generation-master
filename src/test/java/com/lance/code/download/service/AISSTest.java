@@ -17,7 +17,7 @@ import org.jsoup.select.Elements;
 import com.google.gson.Gson;
 
 /**
-*
+* AISS网站套图下载
 * @author zhangchangyuan
 * @version 创建时间：2018年2月2日 上午9:50:52
 */

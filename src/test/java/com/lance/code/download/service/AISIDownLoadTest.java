@@ -1,8 +1,13 @@
 package com.lance.code.download.service;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -11,14 +16,18 @@ import java.util.Map;
 
 import org.jsoup.Jsoup;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 
 /**
-*
+* AISS图片APP图片下载
 * @author zhangchangyuan
 * @version 创建时间：2018年2月2日 上午9:50:52
 */
 public class AISIDownLoadTest {
+	static String txtPath = "E:/HaimaApp/aisipic/readme.txt";
+	//图片下载路径
+	static String filePath ="E:/HaimaApp/aisipic/";
 	
 	public static void main(String[] args) {
 		//分类
@@ -31,8 +40,11 @@ public class AISIDownLoadTest {
 		int pageNum = 50;
 		//图片总数
 		int counts = 0;
-		//图片下载路径
-		String filePath ="E:/HaimaApp/aisipic/";
+		
+		//txt文件路径
+		String txtContext = readTxt(txtPath);
+		//各分类的进度
+		Map<String, Object> catalogMap = (Map<String, Object>)JSONObject.parse(txtContext);
 		
 		try{
 			String response = Jsoup.connect(url)
@@ -53,20 +65,39 @@ public class AISIDownLoadTest {
 			List<Map<String,Object>> list = (List) data.get("list");
 			for (Map<String, Object> image : list) {
 				String catalog = image.get("catalog").toString();
+				int lastId = Integer.parseInt(catalogMap.get(catalog).toString());
+				boolean needBreak = false;
 				for (int j = 1; j < pageNum; j++) {
+					if(needBreak){
+						break;
+					}
 					String pageUrl = String.format(url2, j,Double.valueOf(image.get("id").toString()).intValue());
 					try {
 						String listBody = Jsoup.connect(pageUrl)
 								.header("Content-Type", "application/json;charset=UTF-8").ignoreContentType(true).post().body().text();
 						//http://tuigirl-1254818389.cosbj.myqcloud.com/picture/playboy/286/0.jpg
 						Map<String,Object> map2 = gson.fromJson(listBody, Map.class);
+						System.out.println(map2);
 						Map<String, Object> m2Data = (Map)map2.get("data");
 						List<Map<String,Object>> list2 = (List) m2Data.get("list");
-						for (Map<String, Object> pic : list2) {
-							 //图片数量
-							int imageCount = Double.valueOf(pic.get("pictureCount").toString()).intValue();
+						int newLastId = lastId;
+						for (int k = 0; k < list2.size(); k++) {
+							Map<String, Object> pic = list2.get(k);
+							//System.out.println("\n\t"+pic);
 							//编号
 							int issue =  Double.valueOf(pic.get("issue").toString()).intValue();
+							if(k==0&&issue>newLastId){
+								newLastId = issue;
+							}
+							if(issue<=lastId){
+								needBreak = true;
+								//将最新的数据放进去
+								catalogMap.put(catalog,issue);
+								writeTxt(txtPath, catalogMap.toString());
+								break;
+							}
+							 //图片数量
+							int imageCount = Double.valueOf(pic.get("pictureCount").toString()).intValue();
 							for (int i = 0; i < imageCount; i++) {
 								counts++;
 								String lastUrl= imageUrl+catalog+"/"+issue+"/"+i+".jpg";
@@ -120,5 +151,51 @@ public class AISIDownLoadTest {
             e.printStackTrace();  
         }  
     }  
+	
+	
+	/**
+	 * 读取TXT文件
+	 * @param filePath
+	 * @return
+	 */
+	public static String readTxt(String filePath){
+		StringBuffer sb = new StringBuffer();  
+		try {
+			//绝对路径或相对路径都可以，这里是绝对路径，写入文件时演示相对路径  
+	        File filename = new File(filePath); // 要读取以上路径的input。txt文件  
+	        InputStreamReader reader = new InputStreamReader(  
+	                new FileInputStream(filename)); // 建立一个输入流对象reader  
+	        BufferedReader br = new BufferedReader(reader); // 建立一个对象，它把文件内容转成计算机能读懂的语言  
+	        
+	        String line ="";
+	        line = br.readLine();  
+	        while(line != null) {  
+	        	sb.append(line);
+	        	// 一次读入一行数据  
+	        	line = br.readLine();  
+	        }
+	        br.close();
+	        reader.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		 return sb.toString(); 
+	}
+	
+	public static void writeTxt(String filePath,String context){
+		try {
+			 /* 写入Txt文件 */  
+            File writename = new File(filePath); // 相对路径，如果没有则要建立一个新的output。txt文件  
+            if(!writename.exists()){
+            	 writename.createNewFile(); // 创建新文件  
+            }
+            BufferedWriter out = new BufferedWriter(new FileWriter(writename));  
+            out.write(context); // \r\n即为换行  
+            out.flush(); // 把缓存区内容压入文件  
+            out.close(); // 最后记得关闭文件 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 }
