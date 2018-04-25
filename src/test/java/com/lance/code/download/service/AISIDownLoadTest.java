@@ -92,7 +92,7 @@ public class AISIDownLoadTest {
 							if(issue<=lastId){
 								needBreak = true;
 								//将最新的数据放进去
-								catalogMap.put(catalog,issue);
+								catalogMap.put(catalog,newLastId);
 								writeTxt(txtPath, catalogMap.toString());
 								break;
 							}

@@ -20,4 +20,13 @@
 		from Information_schema.columns 
 		where table_Name=#{tableName} and table_schema=#{schemaName}
 	</select>
+	
+	
+	
+	<insert id="insertClArticle" parameterType="ClArticle">
+		insert into cl_article(code,title,url,posttime,hot) values
+		(#{code},#{title},#{url},#{posttime},#{hot})
+		ON DUPLICATE KEY UPDATE hot = #{hot}
+	</insert>
+	
 </mapper>
