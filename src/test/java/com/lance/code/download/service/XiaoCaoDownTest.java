@@ -53,7 +53,7 @@ public class XiaoCaoDownTest {
 		//年月份
 		String yearAndMonth = "1412";
 		//最大ID
-		int maxId = 1300000;
+		int maxId = 1297423;
 		//分类
 		String url = "http://cl.krj1.pw/htm_data/7/%s/%d.html"; 
 //		String url = "http://cl.krj1.pw/htm_data/7/1412/1300030.html";
@@ -85,7 +85,7 @@ public class XiaoCaoDownTest {
 				//查找到后，次数归0,重新开始
 				notFind=0;
 				Document document = response.charset("gbk").parse();
-				String title = document.head().select("title").text();
+				String title = document.head().select("title").text().replaceAll(" 草榴社區  - powered by phpwind.net", "");
 				String posttime = document.body().select("div.tipad").first().ownText().substring(7, 23);
 				Elements inputTextElements = document.body().select("input[type=text]");
 				Element maxPageElement = inputTextElements.get(inputTextElements.size()-2);
@@ -114,7 +114,7 @@ public class XiaoCaoDownTest {
 //				List<Map<String,Object>> list = (List) data.get("list");
 			}catch(HttpStatusException he){
 				notFind++;
-				System.out.println( String.format("%d没有找到月份：%s---序号%d", notFind,yearAndMonth,i));
+				System.out.println( String.format("%d没有找到月份：%s---序号:%d", notFind,yearAndMonth,i));
 				continue;
 			}catch (Exception e) {
 				e.printStackTrace();
