@@ -1,6 +1,7 @@
 package com.lance.code.generation.domain;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
 * 文章目录模型
@@ -20,6 +21,8 @@ public class ClArticle implements Serializable{
 	private String url;
 	private String posttime;
 	private String hot;
+	private Date createtime;
+	private String context;
 	public Integer getId() {
 		return id;
 	}
@@ -55,6 +58,18 @@ public class ClArticle implements Serializable{
 	}
 	public void setHot(String hot) {
 		this.hot = hot;
+	}
+	public Date getCreatetime() {
+		return createtime;
+	}
+	public void setCreatetime(Date createtime) {
+		this.createtime = createtime;
+	}
+	public String getContext() {
+		return context;
+	}
+	public void setContext(String context) {
+		this.context = context;
 	}
 	
 	

@@ -24,8 +24,8 @@
 	
 	
 	<insert id="insertClArticle" parameterType="ClArticle">
-		insert into cl_article(code,title,url,posttime,hot) values
-		(#{code},#{title},#{url},#{posttime},#{hot})
+		insert into cl_article(code,title,url,posttime,hot,createtime,context) values
+		(#{code},#{title},#{url},#{posttime},#{hot},#{createtime},#{context})
 		ON DUPLICATE KEY UPDATE hot = #{hot}
 	</insert>
 	

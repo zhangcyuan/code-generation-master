@@ -51,9 +51,9 @@ public class XiaoCaoDownTest {
 		//没有找到多少次之后，重置
 		int resetSize = 150;
 		//年月份
-		String yearAndMonth = "1412";
+		String yearAndMonth = "1411";
 		//最大ID
-		int maxId = 1297423;
+		int maxId = 1295771;
 		//分类
 		String url = "http://cl.krj1.pw/htm_data/7/%s/%d.html"; 
 //		String url = "http://cl.krj1.pw/htm_data/7/1412/1300030.html";
@@ -114,7 +114,7 @@ public class XiaoCaoDownTest {
 //				List<Map<String,Object>> list = (List) data.get("list");
 			}catch(HttpStatusException he){
 				notFind++;
-				System.out.println( String.format("%d没有找到月份：%s---序号:%d", notFind,yearAndMonth,i));
+				System.out.println( String.format("%d没有找到月份：%s---序号:%d---%s", notFind,yearAndMonth,i,pageUrl));
 				continue;
 			}catch (Exception e) {
 				e.printStackTrace();
