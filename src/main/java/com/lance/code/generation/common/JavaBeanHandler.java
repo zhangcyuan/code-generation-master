@@ -56,7 +56,9 @@ public class JavaBeanHandler {
 		
 		//导入包
 		.append(KeyWords.IMPORT).append(KeyWords.SPACE).append("java.io.Serializable").append(KeyWords.SEMICOLON)
-		.append(KeyWords.NEWLINE).append(KeyWords.NEWLINE);
+		.append(KeyWords.NEWLINE).append(KeyWords.NEWLINE)
+		.append(ImportClassPackage.SWAGGER_APIMODEL).append(KeyWords.NEWLINE)
+		.append(ImportClassPackage.SWAGGER_APIMODELPROPERTY).append(KeyWords.NEWLINE);
 		
 		//导入资源包
 		Set<String> set = importPackage(columns);
@@ -88,10 +90,15 @@ public class JavaBeanHandler {
 		.append(KeyWords.NEWLINE)
 		.append("*/")
 		.append(KeyWords.NEWLINE)
-		
-		//生成public class A implements b 
+		.append("@ApiModel(value=\"实体类\")")
+		.append(KeyWords.NEWLINE)
+		//生成public class A extends c implements b 
 		.append(KeyWords.PUBLIC).append(KeyWords.SPACE).append(KeyWords.CLASS)
 		.append(KeyWords.SPACE).append(domainClassName(info.getTableName()))
+		//继承
+		//.append(KeyWords.SPACE).append(KeyWords.EXTENDS).append(KeyWords.SPACE)
+		//.append(KeyWords.BaseDomain).append(KeyWords.SPACE)
+		//实现
 		.append(KeyWords.SPACE).append(KeyWords.IMPLEMENTS).append(KeyWords.SPACE)
 		.append(KeyWords.Serial).append(KeyWords.SPACE)
 		.append("{").append(KeyWords.NEWLINE)
@@ -117,6 +124,10 @@ public class JavaBeanHandler {
 				.append(KeyWords.Tab)
 				.append("@GeneratedValue(strategy = GenerationType.IDENTITY)");
 			}
+			//swagger注解
+			builder.append(KeyWords.NEWLINE).append(KeyWords.Tab)
+			.append("@ApiModelProperty(value=\""+c.getColumnComment()+"\")");
+			
 			builder.append(KeyWords.NEWLINE).append(KeyWords.Tab)
 			.append(KeyWords.PRIVATE).append(KeyWords.SPACE)
 			.append(changeType(c.getDataType())).append(KeyWords.SPACE)
@@ -515,7 +526,7 @@ public class JavaBeanHandler {
 		.append(KeyWords.NEWLINE)
 		//基本方法
 		.append(ServiceMethod.serviceGetOne(info))
-		.append(ServiceMethod.serviceGetOne(info))
+		.append(ServiceMethod.serviceGetByPrimaryKey(info))
 		.append(ServiceMethod.serviceList(info))
 		.append(ServiceMethod.serviceSave(info))
 		.append(ServiceMethod.serviceUpdate(info))
@@ -529,7 +540,12 @@ public class JavaBeanHandler {
 	
 	//------------------------------------生成contorller-----------------------------------------
 			public static String contorllerPackage(){
-				StringBuilder builder = new StringBuilder(ConfigConstants.WEB_PACKAGE);
+				StringBuilder builder = new StringBuilder();
+				if(ConfigConstants.CONTROLLER_ROOT_URL.equals("admin")){
+					builder.append(ConfigConstants.WEB_PACKAGE);
+				}else{
+					builder.append(ConfigConstants.API_PACKAGE);
+				}	
 				return builder.append(KeyWords.DOT).append(ConfigConstants.CONTROLLER_PACKAGE).append(KeyWords.DOT)
 						.append(ConfigConstants.MOUDEL_PACKAGE).toString();
 			}
@@ -540,7 +556,12 @@ public class JavaBeanHandler {
 			}
 			
 			public static String contorllerPath(){
-				StringBuilder builder = new StringBuilder(ConfigConstants.CONTROLLER_PATH);
+				StringBuilder builder = new StringBuilder();
+				if(ConfigConstants.CONTROLLER_ROOT_URL.equals("admin")){
+					builder.append(ConfigConstants.CONTROLLER_PATH);
+				}else{
+					builder.append(ConfigConstants.API_PATH);
+				}	
 				return builder.append("\\").append(contorllerPackagePath()).toString();
 			}
 			
@@ -576,6 +597,8 @@ public class JavaBeanHandler {
 		.append(ImportClassPackage.REQUESTMAPPING).append(KeyWords.NEWLINE)
 		.append(ImportClassPackage.REQUESTMETHOD).append(KeyWords.NEWLINE)
 		.append(ImportClassPackage.RESPONSEBODY).append(KeyWords.NEWLINE)
+		.append(ImportClassPackage.SWAGGER_API).append(KeyWords.NEWLINE)
+		.append(ImportClassPackage.SWAGGER_APIOPERATION).append(KeyWords.NEWLINE)
 		.append(KeyWords.NEWLINE).append(KeyWords.NEWLINE)
 		
 		.append(KeyWords.IMPORT)
@@ -601,11 +624,16 @@ public class JavaBeanHandler {
 		.append(KeyWords.DOT).append(KeyWords.APIRETURNOBJECT).append(KeyWords.SEMICOLON)
 		.append(KeyWords.NEWLINE).append(KeyWords.NEWLINE)
 		
+		//类注释
 		.append("/**").append(KeyWords.NEWLINE)
 		.append("* ").append(ConfigConstants.AUTHOR).append(KeyWords.NEWLINE)
 		.append("* ").append("@since ").append(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"))
 		.append(KeyWords.NEWLINE)
 		.append("*/")
+		.append(KeyWords.NEWLINE)
+		.append("@Api(description = \"")
+		.append(JavaBeanHandler.domainClassName(info.getTableName())).append(ConfigConstants.CONTROLLER_SUFFIX)
+		.append("相关接口\")")
 		.append(KeyWords.NEWLINE)
 		.append(KeyWords.CONTROLLER).append(KeyWords.NEWLINE)
 		.append(KeyWords.REQUESTMAPPING).append("(\"/")
@@ -613,6 +641,7 @@ public class JavaBeanHandler {
 		.append("/").append(StringUtils.uncapitalize(JavaBeanHandler.domainClassName(info.getTableName()))).append("\")")
 		.append(KeyWords.NEWLINE)
 		
+		//类名
 		.append(KeyWords.PUBLIC).append(KeyWords.SPACE).append(KeyWords.CLASS).append(KeyWords.SPACE)
 		.append(JavaBeanHandler.domainClassName(info.getTableName())).append(ConfigConstants.CONTROLLER_SUFFIX)
 		.append(KeyWords.SPACE).append("{").append(KeyWords.NEWLINE)
@@ -645,6 +674,8 @@ public class JavaBeanHandler {
 		return builder.toString();
 		
 	}
+	
+	
 	
 	
 	/**------------------------------------------------------------------------------
@@ -714,6 +745,7 @@ public class JavaBeanHandler {
 			case "decimal": return "BigDecimal";
 			case "text": ;
 			case "varchar": return "String";
+			case "longtext": return "String";
 			case "tinyint": return "Integer";
 			case "int": return "Integer";
 		}

@@ -7,7 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication(scanBasePackages="com.lance.code.generation")
 @MapperScan("com.lance.code.generation.mapper")
 public class SimpleApplication {
-
+	/**
+	 * 自动根据数据库生产代码类为testcase----------MainTest.java,此处服务暂时没用
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		SpringApplication.run(SimpleApplication.class, args);
 	}

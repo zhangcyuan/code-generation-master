@@ -29,13 +29,17 @@ public class AISIDownLoadTest {
 	//图片下载路径
 	static String filePath ="E:/HaimaApp/aisipic/";
 	
+	static String image_host = "http://aiss.obs.cn-north-1.myhwclouds.com/";
+	
 	public static void main(String[] args) {
 		//分类
 		String url = "http://api.pmkoo.cn/aiss/suite/sourceList.do?page=1"; 
 		//每个分类中的列表
 		String url2 = "http://api.pmkoo.cn/aiss/suite/suiteList.do?page=%s&sourceId=%s";
+		
+		
 		//图片链接 
-		String imageUrl = "http://tuigirl-1254818389.cosbj.myqcloud.com/picture/";
+		String imageUrl = image_host+"picture/";
 		//总分页
 		int pageNum = 50;
 		//图片总数
@@ -123,7 +127,7 @@ public class AISIDownLoadTest {
 		//E:/HaimaApp/aisipic/playboy/286/0.jpg
         //图片url中的前面部分：例如"http://images.csdn.net/"  
 		
-		String lastFilePath = imgUrl.replace("http://tuigirl-1254818389.cosbj.myqcloud.com/", filePath);
+		String lastFilePath = imgUrl.replace(image_host, filePath);
 		String dirs = lastFilePath.substring(0, lastFilePath.lastIndexOf("/"));
         try {  
             //创建文件目录  

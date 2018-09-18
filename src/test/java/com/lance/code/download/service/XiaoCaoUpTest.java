@@ -33,6 +33,7 @@ import com.lance.code.generation.mapper.TablesMapper;
 import com.lance.code.generation.web.SimpleApplication;
 
 /**
+ * 
 * 小草微微 递增
 * @author zhangchangyuan
 * @version 创建时间：2018年2月2日 上午9:50:52
@@ -48,13 +49,15 @@ public class XiaoCaoUpTest {
 	
 	@Test
 	public void main() {
-		//http://cl.krj1.pw/htm_data/7/1412/1300030.html
+
+		//http://cl.krj1.pw/htm_data/7/1503/1423153.html
+
 		//没有找到多少次之后，重置
 		int resetSize = 150;
 		//年月份
-		String yearAndMonth = "1412";
+		String yearAndMonth = "1503";
 		//最大ID
-		int minID = 1314595;
+		int minID = 1423153;
 		//分类
 		String url = "http://cl.krj1.pw/htm_data/7/%s/%d.html"; 
 //			String url = "http://cl.krj1.pw/htm_data/7/1412/1300030.html";

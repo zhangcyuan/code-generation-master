@@ -9,7 +9,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.lance.code.generation.web.SimpleApplication;
-
+/**
+ * 自动生成代码启动类
+ * @author Administrator
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes=SimpleApplication.class)
 public class MainTest {

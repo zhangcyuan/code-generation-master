@@ -110,8 +110,6 @@ public class TableServiceImpl implements TableService {
 			writeFile(JavaBeanHandler.contorllerPath(), JavaBeanHandler.className(info.getTableName(), ConfigConstants.CONTROLLER_SUFFIX)+".java", controller);
 		}
 		
-		
-
 	}
 	
 	/**

@@ -25,6 +25,9 @@ public interface KeyWords {
 	/**Serializable关键字*/
 	String Serial = "Serializable";
 	
+	/**实体类通用字段*/
+	String BaseDomain = "BaseDomain";
+	
 	/**import关键字*/
 	String IMPORT = "import";
 	

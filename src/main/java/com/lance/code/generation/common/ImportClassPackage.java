@@ -29,6 +29,12 @@ public interface ImportClassPackage {
 	String GENERATED_VALUE = "import javax.persistence.GeneratedValue;";
 	/**GenerationType 自动增长类型*/
 	String GENERATED_TYPE = "import javax.persistence.GenerationType;";
+	
+	/**swagger controller 注解*/
+	String SWAGGER_API = "import io.swagger.annotations.Api;";
+	String SWAGGER_APIOPERATION = "import io.swagger.annotations.ApiOperation;";
+	String SWAGGER_APIMODEL = "import io.swagger.annotations.ApiModel;";
+	String SWAGGER_APIMODELPROPERTY = "import io.swagger.annotations.ApiModelProperty;";
 	/**ID 主键 */
 	String ID = "import javax.persistence.Id;";
 }
