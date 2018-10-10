@@ -10,12 +10,20 @@ import java.net.URL;
 public class DownLoadImgaeUtil {
 	
 	
-	public static void downImages(String filePath,String imgUrl,String replaceStr) throws UnsupportedEncodingException {  
+	public static void downImages(String filePath,String imgUrl,String replaceStr,String userPath) throws UnsupportedEncodingException {  
 		//http://tuigirl-1254818389.cosbj.myqcloud.com/picture/playboy/286/0.jpg
 		//E:/HaimaApp/aisipic/playboy/286/0.jpg
         //图片url中的前面部分：例如"http://images.csdn.net/"  
-		String lastFilePath = imgUrl.replace(replaceStr, filePath);
-		String dirs = lastFilePath.substring(0, lastFilePath.lastIndexOf("/"));
+		String lastFilePath ="";
+		String dirs = "";
+		if(userPath==null){
+			lastFilePath = imgUrl.replace(replaceStr, filePath);
+			dirs = lastFilePath.substring(0, lastFilePath.lastIndexOf("/"));
+		}else{
+			lastFilePath = imgUrl.replace(replaceStr, userPath);
+			dirs = userPath;
+		}
+		
         try {  
             //创建文件目录  
             File files = new File(dirs);  

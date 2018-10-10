@@ -109,7 +109,7 @@ public class AISIDownLoadTest {
 								String lastUrl= imageUrl+catalog+"/"+issue+"/"+i+".jpg";
 								System.out.println(lastUrl);
 								//downImages(filePath, lastUrl);
-								DownLoadImgaeUtil.downImages(filePath, lastUrl, image_host);
+								DownLoadImgaeUtil.downImages(filePath, lastUrl, image_host,null);
 								Thread.sleep(20);
 							}
 						}
