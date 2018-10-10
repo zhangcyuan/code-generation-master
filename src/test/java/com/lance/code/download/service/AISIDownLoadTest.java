@@ -18,6 +18,8 @@ import org.jsoup.Jsoup;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
+import com.lance.code.generation.utils.DownLoadImgaeUtil;
+import com.lance.code.generation.utils.TxtUtil;
 
 /**
 * AISS图片APP图片下载
@@ -46,7 +48,7 @@ public class AISIDownLoadTest {
 		int counts = 0;
 		
 		//txt文件路径
-		String txtContext = readTxt(txtPath);
+		String txtContext = TxtUtil.readTxt(txtPath);
 		//各分类的进度
 		Map<String, Object> catalogMap = (Map<String, Object>)JSONObject.parse(txtContext);
 		
@@ -97,7 +99,7 @@ public class AISIDownLoadTest {
 								needBreak = true;
 								//将最新的数据放进去
 								catalogMap.put(catalog,newLastId);
-								writeTxt(txtPath, catalogMap.toString());
+								TxtUtil.writeTxt(txtPath, catalogMap.toString());
 								break;
 							}
 							 //图片数量
@@ -106,7 +108,8 @@ public class AISIDownLoadTest {
 								counts++;
 								String lastUrl= imageUrl+catalog+"/"+issue+"/"+i+".jpg";
 								System.out.println(lastUrl);
-								downImages(filePath, lastUrl);
+								//downImages(filePath, lastUrl);
+								DownLoadImgaeUtil.downImages(filePath, lastUrl, image_host);
 								Thread.sleep(20);
 							}
 						}
@@ -122,7 +125,7 @@ public class AISIDownLoadTest {
 	}
 	
 	
-	public static void downImages(String filePath,String imgUrl) throws UnsupportedEncodingException {  
+	/*public static void downImages(String filePath,String imgUrl) throws UnsupportedEncodingException {  
 		//http://tuigirl-1254818389.cosbj.myqcloud.com/picture/playboy/286/0.jpg
 		//E:/HaimaApp/aisipic/playboy/286/0.jpg
         //图片url中的前面部分：例如"http://images.csdn.net/"  
@@ -154,52 +157,9 @@ public class AISIDownLoadTest {
         } catch (Exception e) {  
             e.printStackTrace();  
         }  
-    }  
+    }  */
 	
 	
-	/**
-	 * 读取TXT文件
-	 * @param filePath
-	 * @return
-	 */
-	public static String readTxt(String filePath){
-		StringBuffer sb = new StringBuffer();  
-		try {
-			//绝对路径或相对路径都可以，这里是绝对路径，写入文件时演示相对路径  
-	        File filename = new File(filePath); // 要读取以上路径的input。txt文件  
-	        InputStreamReader reader = new InputStreamReader(  
-	                new FileInputStream(filename)); // 建立一个输入流对象reader  
-	        BufferedReader br = new BufferedReader(reader); // 建立一个对象，它把文件内容转成计算机能读懂的语言  
-	        
-	        String line ="";
-	        line = br.readLine();  
-	        while(line != null) {  
-	        	sb.append(line);
-	        	// 一次读入一行数据  
-	        	line = br.readLine();  
-	        }
-	        br.close();
-	        reader.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		 return sb.toString(); 
-	}
 	
-	public static void writeTxt(String filePath,String context){
-		try {
-			 /* 写入Txt文件 */  
-            File writename = new File(filePath); // 相对路径，如果没有则要建立一个新的output。txt文件  
-            if(!writename.exists()){
-            	 writename.createNewFile(); // 创建新文件  
-            }
-            BufferedWriter out = new BufferedWriter(new FileWriter(writename));  
-            out.write(context); // \r\n即为换行  
-            out.flush(); // 把缓存区内容压入文件  
-            out.close(); // 最后记得关闭文件 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	
 }

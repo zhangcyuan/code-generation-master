@@ -3,6 +3,7 @@ package com.lance.code.download.service;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSONObject;
+import com.lance.code.generation.utils.TxtUtil;
 
 /**
 *
@@ -11,7 +12,7 @@ import com.alibaba.fastjson.JSONObject;
 */
 public class StringToMapTest {
 	public static void main(String[] args) {
-		String str = AISIDownLoadTest.readTxt(AISIDownLoadTest.txtPath);
+		String str = TxtUtil.readTxt(AISIDownLoadTest.txtPath);
 		Map<String, Object> map = (Map<String, Object>)JSONObject.parse(str);
 		System.out.println(map.get("aiss"));
 		System.out.println(map.toString());

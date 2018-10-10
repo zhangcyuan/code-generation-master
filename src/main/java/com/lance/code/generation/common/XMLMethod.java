@@ -283,9 +283,9 @@ public final class XMLMethod {
 			//处理分页中的每个字段
 			.append("and ")
 			.append(column.getColumnName())
-			.append(" = ${args.")
+			.append(" = #{args.")
 			.append(JavaBeanHandler.attrName(column.getColumnName(), false))
-			.append(")}")
+			.append("}")
 			.append(KeyWords.NEWLINE)
 			.append(KeyWords.Tab)
 			.append(KeyWords.Tab)

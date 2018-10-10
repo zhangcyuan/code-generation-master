@@ -8,17 +8,17 @@ public interface ConfigConstants {
 	String AUTHOR = "@author zhangchangyuan";
 
 	/** 定义单个表名  多个同一个模块的表名 用英文逗号分隔  可一次性生成 **/
-	String TABLE_NAME = "sys_role";
+	String TABLE_NAME = "questionnaire,question,option,question_form,form_option";
 	
 	/** 生成模块包名称 */
-	String MOUDEL_PACKAGE = "system";
+	String MOUDEL_PACKAGE = "questionnaire";
 	
 	/** 创建各个功能模块开关  false 为关闭   true 为打开 */
 	boolean CREATE_MODEL = true;
-	boolean CREATE_MAPPER = false;
-	boolean CREATE_SERVICE = false;
-	boolean CREATE_SERVICEIMPL = false;
-	boolean CREATE_MAPPER_XML = false;
+	boolean CREATE_MAPPER = true;
+	boolean CREATE_SERVICE = true;
+	boolean CREATE_SERVICEIMPL = true;
+	boolean CREATE_MAPPER_XML = true;
 	boolean CREATE_CONTROLLER = true;
 	
 	/** controller更访问路径 如：/api/test/sysUsetTest   更路径为 api  一般为 后台 admin  或前端api */

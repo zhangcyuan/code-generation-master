@@ -486,8 +486,8 @@ public final class ControllerMethod {
 		.append(KeyWords.NEWLINE)
 		.append(KeyWords.Tab)
 		.append("@ApiOperation(value = \"分页查询列表\", notes = \"分页查询列表\",")
-		.append("response= ")
-		.append(modelName).append(".class").append(",responseContainer=\"Map\")")
+		.append("response= Page.class")
+		.append(",responseContainer=\"Map\")")
 		
 		.append(KeyWords.NEWLINE)
 		.append(KeyWords.Tab)
