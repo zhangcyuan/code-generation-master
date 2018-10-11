@@ -30,13 +30,13 @@ public class ManhuaTest {
 	static String url = domain+"/category/bookList?end=0&category_id=0&query=base"; 
 	
 	//图片下载路径
-    static String filePath ="E:/HaimaApp/manhua/";
-	//static String filePath = "D:/imagelist/manhua/";
+    //static String filePath ="E:/HaimaApp/manhua/";
+	static String filePath = "D:/imagelist/manhua/";
 	
 	public static void main(String[] args) {
 		
 		//页码总数
-		int pagenum = 20; //20
+		int pagenum = 1; //20
 		
 		String lastbooks = TxtUtil.readTxt(filePath+"readme.txt");
 		
@@ -79,8 +79,10 @@ public class ManhuaTest {
 					String href = element.selectFirst("a").attr("href");
 					String bookname = element.select(".w-bookName").text();
 					String updateNum =  element.select(".classifly-chapter").text();
+					String head_pic =  element.select("img").attr("src");
 					//System.out.println(element.toString());
-//					System.out.println(href);
+					//System.out.println(head_pic);
+					
 					System.out.println(bookname);
 //					System.out.println(updateNum);
 					Integer bookId =Integer.parseInt(href.replace("/book/cartoon/info?book_id=", ""));
@@ -96,19 +98,20 @@ public class ManhuaTest {
 						//新书则爬所有章节
 						book.setUpdateNum(0);
 					}
+					//头图下载
+					//http://img.fox800.xyz/books/1528788134_1524466221_xxxxxx-210x297.jpg
+					DownLoadImgaeUtil.downImages(filePath, head_pic,null ,filePath+book.getBookid()+"_"+book.getBookname()+"/",book.getBookname()+".jpg");
 					//旧书爬取更新的章节
-					parseBookDetail(book);
+					//parseBookDetail(book);
 					
 					book.setUpdateNum(newNum);
 					
 					bookMap.put(bookId, book);
+					String json = gson.toJson(bookMap);
+					TxtUtil.writeTxt(filePath+"readme.txt", json);
 					Thread.sleep(1000L);
+					break;
 				}
-				
-				String json = gson.toJson(bookMap);
-				
-				TxtUtil.writeTxt(filePath+"readme.txt", json);
-				
 				
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -175,7 +178,7 @@ public class ManhuaTest {
 				String img_url = element.attr("data-lazyload");
 				img_url = img_url.substring(0, img_url.indexOf("?"));
 				//http://img.fox800.xyz/images/book_43_chapter_1993_22.jpg
-				DownLoadImgaeUtil.downImages(filePath, img_url, "http://img.fox800.xyz/images/",filePath+book.getBookid()+"_"+book.getBookname()+"/"+cp.getChapter_id()+"_"+cp.getTitle()+"/");
+				DownLoadImgaeUtil.downImages(filePath, img_url, "http://img.fox800.xyz/images/",filePath+book.getBookid()+"_"+book.getBookname()+"/"+cp.getChapter_id()+"_"+cp.getTitle()+"/",null);
 			}
 			
 		} catch (Exception e) {
