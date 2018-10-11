@@ -1,15 +1,8 @@
 package com.lance.code.download.service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -20,10 +13,8 @@ import org.jsoup.select.Elements;
 import org.springframework.util.StringUtils;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.lance.code.generation.utils.DownLoadImgaeUtil;
-import com.lance.code.generation.utils.Reinterpret;
 import com.lance.code.generation.utils.TxtUtil;
 
 /**
@@ -39,13 +30,13 @@ public class ManhuaTest {
 	static String url = domain+"/category/bookList?end=0&category_id=0&query=base"; 
 	
 	//图片下载路径
-//	static String filePath ="E:/HaimaApp/manhua/";
-	static String filePath = "D:/imagelist/manhua/";
+    static String filePath ="E:/HaimaApp/manhua/";
+	//static String filePath = "D:/imagelist/manhua/";
 	
 	public static void main(String[] args) {
 		
 		//页码总数
-		int pagenum = 1; //20
+		int pagenum = 20; //20
 		
 		String lastbooks = TxtUtil.readTxt(filePath+"readme.txt");
 		
@@ -111,8 +102,7 @@ public class ManhuaTest {
 					book.setUpdateNum(newNum);
 					
 					bookMap.put(bookId, book);
-					//Thread.sleep(1000L);
-					break;
+					Thread.sleep(1000L);
 				}
 				
 				String json = gson.toJson(bookMap);
@@ -185,7 +175,7 @@ public class ManhuaTest {
 				String img_url = element.attr("data-lazyload");
 				img_url = img_url.substring(0, img_url.indexOf("?"));
 				//http://img.fox800.xyz/images/book_43_chapter_1993_22.jpg
-				DownLoadImgaeUtil.downImages(filePath, img_url, "http://img.fox800.xyz/images/",filePath+book.getBookname()+"/"+cp.getChapter_id()+"/");
+				DownLoadImgaeUtil.downImages(filePath, img_url, "http://img.fox800.xyz/images/",filePath+book.getBookid()+"_"+book.getBookname()+"/"+cp.getChapter_id()+"_"+cp.getTitle()+"/");
 			}
 			
 		} catch (Exception e) {
