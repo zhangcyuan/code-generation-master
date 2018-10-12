@@ -1,0 +1,103 @@
+<html>
+  
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>【章节名称】</title>
+    <link rel="stylesheet" href="../../static/mui.min.css">
+    <link rel="stylesheet" type="text/css" href="http://x13043.sanby.xyz/themes/wechat/test-theme/default-skin/src/css/default.css">
+    <!-- <link rel="stylesheet" type="text/css" href="../../static/default.css"> -->
+    <link rel="stylesheet" type="text/css" href="../../static/common.css">
+    <link rel="stylesheet" type="text/css" href="../../static/book.css">
+    <script src="../../static/jquery.min.js"></script>
+    <script type="text/javascript" src="../../static/mui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery_lazyload/1.9.7/jquery.lazyload.js"></script>
+  </head>
+  
+  <body style="overflow: auto;">
+    <div class="detail-content mui-content person-content">
+      <!-- 弹出层顶部 -->
+      <div class="float-bar detail-header hidden">
+        <a href="./page.html" class="mui-pull-left">
+          <i class="icon-source-list icon-return "></i>返回书页</a>
+        <a href="../../home.html" class="mui-pull-right">
+          <i class="icon-source-list icon-home "></i>
+        </a>
+      </div>
+      <!-- 弹出目录 -->
+      <div class="float-bar detail-chapter-list hidden">
+        <div class="chapter-list-top">【更新状态】更至【更新章节序号】话
+          <span id="chapter-list-order" class="chapter-list-order" mode="0">
+            <i class="icon-source-list icon-order"></i>
+            <span class="order-name">正序</span></span>
+        </div>
+        <ul id="sort-list">
+        	【章节目录】
+        </ul>
+      </div>
+      <!-- 漫画图片-->
+      <div class="y-vague-box" id="detail-img-content" data-imagelazyload="1">
+      	【图片列表】
+       </div>
+      <!-- 回到顶部-->
+      <div class="toTop y-toTop y-gotop hidden">
+        <img src="../../static/y-top.png"></div>
+      <!-- 弹出层低部 -->
+      <div class="float-bar detail-tool hidden">
+        <div class="detail-tool-footer">
+         <div class="tool-item">
+            <div class="item" 【上一地址】>
+            	<i class="icon-source-list icon-last"></i><span>【上一章节】</span>
+            </div>
+            <div class="item"></div>
+            <div class="item" id="chapterList">
+              <i class="icon-source-list icon-list"></i>
+              <span>目录</span></div>
+            <div class="item"></div>
+            <div class="item" 【下一地址】>
+              <i class="icon-source-list icon-next"></i>
+              <span>【下一章节】</span></div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+    <script>
+    $(".popup-attention").click(function() {
+        $(".popup-windows").hide();
+      });
+
+      $(".btn-zhui-book").click(function() {
+        $('.popup-zhui-book').show();
+      });
+      $(".popup-zhui-book-attention").click(function() {
+        $(".popup-zhui-book").hide();
+      });
+
+      $('.disable').click(function() {
+        return false;
+      });
+
+      //回到顶部
+      $(function() {
+        var speed = 1000;
+        $(".y-toTop").click(function() {
+          $("html,body").animate({
+            "scrollTop": 0
+          },
+          speed);
+        });
+      });</script>
+    <script>$(function() {
+        $(".y-vague-box img").lazyload({
+          placeholder: "../../static/default.jpg",
+          effect: "fadeIn",
+          threshold: 300,
+          failurelimit: 0
+        });
+      });</script>
+    <script type="text/javascript" src="../../static/common.js"></script>
+  </body>
+
+</html>

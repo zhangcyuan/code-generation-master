@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -32,8 +33,8 @@ public class ManhuaTest {
 	static String url = domain+"/category/bookList?end=0&category_id=0&query=base"; 
 	
 	//图片下载路径
-    static String filePath ="E:/HaimaApp/manhua/";
-	//static String filePath = "D:/imagelist/manhua/";
+    //static String filePath ="E:/HaimaApp/manhua/";
+	static String filePath = "D:/imagelist/manhua/";
     
     //书籍信息 地址
     static String bookPath = filePath+"static/book.txt";
@@ -98,7 +99,6 @@ public class ManhuaTest {
 					int newNum = Integer.parseInt(updateNum.replace("更至第", "").replace("话", ""));
 					Book book = bookMap.get(bookId);
 					
-					
 					if(book==null){
 						book = new Book();
 						book.setBookid(bookId);
@@ -107,14 +107,14 @@ public class ManhuaTest {
 						//新书则爬所有章节
 						book.setUpdateNum(0);
 					}
+					book.setBookpath(book.getBookid()+"_"+book.getBookname()+"/");
 					//头图下载
 					//http://img.fox800.xyz/books/1528788134_1524466221_xxxxxx-210x297.jpg
-					DownLoadImgaeUtil.downImages(filePath, head_pic,null ,filePath+book.getBookid()+"_"+book.getBookname()+"/",book.getBookname()+".jpg");
+					DownLoadImgaeUtil.downImages(null, head_pic,null ,filePath+"image/"+book.getBookpath(),book.getBookname()+".jpg");
 					//旧书爬取更新的章节
-					//parseBookDetail(book);
+					parseBookDetail(book);
 					
 					book.setUpdateNum(newNum);
-					
 					bookMap.put(bookId, book);
 					String json = gson.toJson(bookMap);
 					TxtUtil.writeTxt(bookPath, json);
@@ -146,19 +146,26 @@ public class ManhuaTest {
 			//System.out.println(document.body());
 			
 			//找到主图链接
-			String mainImage =	document.select(".l-top-bg img").get(0).attr("src");
+			String mainImage =	document.select(".hd img").get(0).attr("src");
+			DownLoadImgaeUtil.downImages(null, mainImage,null ,filePath+"image/"+book.getBookpath(),book.getBookname()+"_main.jpg");
+			
 			//阅读数
 			String readCount =	document.select(".ft-content h1").get(0).text();
-			System.out.println(readCount);
+			book.setReadCount(readCount);
+			List<String> tagList = new ArrayList<>();
 			//标签 分类
-			Elements tagesEle =	document.select(".ft-content-follow span");
-			
+			Elements tags =	document.select(".ft-content-follow span");
+			for (Element element : tags) {
+				tagList.add(element.text());
+			}
+			book.setBookTag(tagList);
 			//更新状态
 			String updateState =	document.select(".l-detail-span").get(0).text();
+			book.setUpdateState(updateState);
 			
 			Elements chapters = document.select("ul>li>p.overhidden");
 			int index = 0;
-			List<Chapter> list = new ArrayList<>();
+			/*List<Chapter> list = new ArrayList<>();
 			for (Element element : chapters) {
 				Chapter cp = new Chapter();
 				index++;
@@ -173,8 +180,7 @@ public class ManhuaTest {
 					parseChapterDetail(book, cp);
 					Thread.sleep(1000L);
 				}
-			}
-			//book.setChapters(list);
+			}*/
 			
 		} catch (Exception e) {
 			e.printStackTrace();

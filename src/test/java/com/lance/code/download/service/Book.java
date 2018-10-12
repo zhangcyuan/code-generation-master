@@ -1,6 +1,5 @@
 package com.lance.code.download.service;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class Book {
@@ -16,8 +15,10 @@ public class Book {
 	String updateState;
 	//书目录  id_bookname
 	String bookpath;
+	//阅读数
+	String readCount;
 	//标签 分类
-	String[] bookTag;
+	List<String> bookTag;
 	
 	//章节列表
 	//List<Chapter> chapters;
@@ -49,6 +50,12 @@ public class Book {
 	}
 	
 	
+	public String getReadCount() {
+		return readCount;
+	}
+	public void setReadCount(String readCount) {
+		this.readCount = readCount;
+	}
 	public String getUpdateState() {
 		return updateState;
 	}
@@ -61,20 +68,18 @@ public class Book {
 	public void setBookpath(String bookpath) {
 		this.bookpath = bookpath;
 	}
-	public String[] getBookTag() {
+	public List<String> getBookTag() {
 		return bookTag;
 	}
-	public void setBookTag(String[] bookTag) {
+	public void setBookTag(List<String> bookTag) {
 		this.bookTag = bookTag;
 	}
 	@Override
 	public String toString() {
 		return "Book [href=" + href + ", bookname=" + bookname + ", bookid=" + bookid + ", updateNum=" + updateNum
-				+ ", updateState=" + updateState + ", bookpath=" + bookpath + ", bookTag=" + Arrays.toString(bookTag)
-				 +"]";
+				+ ", updateState=" + updateState + ", bookpath=" + bookpath + ", readCount=" + readCount + ", bookTag="
+				+ bookTag + "]";
 	}
-
-
 
 	
 	

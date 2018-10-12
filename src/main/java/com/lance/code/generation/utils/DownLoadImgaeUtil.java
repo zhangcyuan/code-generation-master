@@ -9,7 +9,15 @@ import java.net.URL;
 
 public class DownLoadImgaeUtil {
 	
-	
+	/**
+	 * 
+	 * @param filePath 跟路径 一般和域名 替换
+	 * @param imgUrl  图片地址
+	 * @param replaceStr 一般是域名  替换成跟路径地址
+	 * @param userPath	自定义目录地址
+	 * @param fileName 自定义文件名   如果2个自定义使用了   上面的 跟路径可以不需要
+	 * @throws UnsupportedEncodingException
+	 */
 	public static void downImages(String filePath,String imgUrl,String replaceStr,String userPath,String fileName) 
 			throws UnsupportedEncodingException {  
 		//http://tuigirl-1254818389.cosbj.myqcloud.com/picture/playboy/286/0.jpg
