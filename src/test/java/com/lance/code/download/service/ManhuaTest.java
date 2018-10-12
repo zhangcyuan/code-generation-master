@@ -119,7 +119,7 @@ public class ManhuaTest {
 					String json = gson.toJson(bookMap);
 					TxtUtil.writeTxt(bookPath, json);
 					//Thread.sleep(1000L);
-					//break;
+					break;
 				}
 				
 			} catch (Exception e) {
@@ -146,13 +146,15 @@ public class ManhuaTest {
 			//System.out.println(document.body());
 			
 			//找到主图链接
-				
+			String mainImage =	document.select(".l-top-bg img").get(0).attr("src");
 			//阅读数
-			
+			String readCount =	document.select(".ft-content h1").get(0).text();
+			System.out.println(readCount);
 			//标签 分类
+			Elements tagesEle =	document.select(".ft-content-follow span");
 			
 			//更新状态
-			
+			String updateState =	document.select(".l-detail-span").get(0).text();
 			
 			Elements chapters = document.select("ul>li>p.overhidden");
 			int index = 0;
