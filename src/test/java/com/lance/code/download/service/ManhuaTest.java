@@ -1,5 +1,7 @@
 package com.lance.code.download.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,15 +32,24 @@ public class ManhuaTest {
 	static String url = domain+"/category/bookList?end=0&category_id=0&query=base"; 
 	
 	//图片下载路径
-    //static String filePath ="E:/HaimaApp/manhua/";
-	static String filePath = "D:/imagelist/manhua/";
+    static String filePath ="E:/HaimaApp/manhua/";
+	//static String filePath = "D:/imagelist/manhua/";
+    
+    //书籍信息 地址
+    static String bookPath = filePath+"static/book.txt";
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		
 		//页码总数
 		int pagenum = 1; //20
 		
-		String lastbooks = TxtUtil.readTxt(filePath+"readme.txt");
+		
+		File bookFile = new File(bookPath);
+		if(!bookFile.exists()){
+			bookFile.createNewFile();
+		}
+		
+		String lastbooks = TxtUtil.readTxt(bookPath);
 		
 		Type mtype = new TypeToken<Map<Integer, Book>>() {
         }.getType();
@@ -54,7 +65,7 @@ public class ManhuaTest {
 			map.put("ul", "");
 			map.put("order", "book_view DESC,book_uptime DESC");
 			String pageUrl = String.format(url, i);
-			System.out.println(pageUrl);
+			//System.out.println(pageUrl);
 			try{
 				Document document = Jsoup.connect(pageUrl)
 //				.header("Accept", "*/*")
@@ -80,8 +91,6 @@ public class ManhuaTest {
 					String bookname = element.select(".w-bookName").text();
 					String updateNum =  element.select(".classifly-chapter").text();
 					String head_pic =  element.select("img").attr("src");
-					//System.out.println(element.toString());
-					//System.out.println(head_pic);
 					
 					System.out.println(bookname);
 //					System.out.println(updateNum);
@@ -108,9 +117,9 @@ public class ManhuaTest {
 					
 					bookMap.put(bookId, book);
 					String json = gson.toJson(bookMap);
-					TxtUtil.writeTxt(filePath+"readme.txt", json);
-					Thread.sleep(1000L);
-					break;
+					TxtUtil.writeTxt(bookPath, json);
+					//Thread.sleep(1000L);
+					//break;
 				}
 				
 			} catch (Exception e) {
@@ -135,6 +144,15 @@ public class ManhuaTest {
 			.header("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/16A366 MicroMessenger/6.7.2 NetType/WIFI Language/zh_CN")
 			.ignoreContentType(true).get();
 			//System.out.println(document.body());
+			
+			//找到主图链接
+				
+			//阅读数
+			
+			//标签 分类
+			
+			//更新状态
+			
 			
 			Elements chapters = document.select("ul>li>p.overhidden");
 			int index = 0;

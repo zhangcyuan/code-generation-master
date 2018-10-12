@@ -1,5 +1,6 @@
 package com.lance.code.download.service;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Book {
@@ -11,8 +12,15 @@ public class Book {
 	Integer bookid;
 	//最新更新章节
 	Integer updateNum;
+	//更新完结状态  完结 或 连载中
+	String updateState;
+	//书目录  id_bookname
+	String bookpath;
+	//标签 分类
+	String[] bookTag;
+	
 	//章节列表
-	List<Chapter> chapters;
+	//List<Chapter> chapters;
 	
 	
 	public String getHref() {
@@ -40,17 +48,32 @@ public class Book {
 		this.updateNum = updateNum;
 	}
 	
-	public List<Chapter> getChapters() {
-		return chapters;
+	
+	public String getUpdateState() {
+		return updateState;
 	}
-	public void setChapters(List<Chapter> chapters) {
-		this.chapters = chapters;
+	public void setUpdateState(String updateState) {
+		this.updateState = updateState;
+	}
+	public String getBookpath() {
+		return bookpath;
+	}
+	public void setBookpath(String bookpath) {
+		this.bookpath = bookpath;
+	}
+	public String[] getBookTag() {
+		return bookTag;
+	}
+	public void setBookTag(String[] bookTag) {
+		this.bookTag = bookTag;
 	}
 	@Override
 	public String toString() {
 		return "Book [href=" + href + ", bookname=" + bookname + ", bookid=" + bookid + ", updateNum=" + updateNum
-				+ ", chapters=" + chapters + "]";
+				+ ", updateState=" + updateState + ", bookpath=" + bookpath + ", bookTag=" + Arrays.toString(bookTag)
+				 +"]";
 	}
+
 
 
 	
