@@ -2,6 +2,8 @@ package com.lance.code.download.service;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
@@ -34,24 +36,26 @@ public class MakeManhuaHome {
 		liSb.append("<li class='w-shelfBookinfo'>").append("\n");
 		liSb.append("<a href='【书籍主页】'>").append("\n");
 		liSb.append("<div class='w-bookPic'>").append(NEWLINE);
-		liSb.append("<img src='【封面图片】'>").append(NEWLINE);
+		liSb.append("<img data-original='【封面图片】' src='./static/default.jpg' data-lazyload-id='【加载序号】'>").append(NEWLINE);
 		liSb.append("<div class='classifly-chapter'>更至第【更新章节序号】话</div></div>").append(NEWLINE);
 		liSb.append("<div class='w-bookName'>【漫画书名】</div></a>").append(NEWLINE);
 		liSb.append("</li>").append(NEWLINE);
 		  
 		StringBuffer ul = new StringBuffer();
+		int i = 0;
 		for (Integer bookId : bookMap.keySet()) {
 			Book book = bookMap.get(bookId);
+			i++;
 			String li = liSb.toString(); 
 			li = li.replace("【书籍主页】", "./image/"+book.getBookid()+"_"+book.getBookname()+"/page.html");
 			li = li.replace("【封面图片】", "./image/"+book.getBookid()+"_"+book.getBookname()+"/"+book.getBookname()+".jpg");
 			li = li.replace("【更新章节序号】", book.getUpdateNum()+"");
 			li = li.replace("【漫画书名】", book.getBookname());
+			li = li.replace("【加载序号】", i+"");
 			ul.append(li);
 			//生成每本书的章节目录
 			makeMulu(book);
-			//生成每个章节的漫画内容
-			break;
+//			break;
 		}
 		//读取首页模板
 		String bookHome = TxtUtil.readTxt(ManhuaTest.filePath+"static/home.html");
@@ -88,23 +92,38 @@ public class MakeManhuaHome {
 		//读取书下所有目录取名称
 		File file=new File(ManhuaTest.filePath+"image/"+book.getBookpath());
 		File[] files =	file.listFiles();
-		int i =0;
 		StringBuffer ul = new StringBuffer();
+		List<File> fileList = new ArrayList<>();
 		for (File file2 : files) {
 			if(file2.isDirectory()){
-				i++;
-				String li = liSb.toString();
-				String chapterName =file2.getName().split("_")[1];
-				String chapterId = file2.getName().split("_")[0];
-				li = li.replace("【章节序号】", i+"");
-				li = li.replace("【章节内容】", "./"+i+".html");
-				li = li.replace("【章节名称】", chapterName);
-				ul.append(li);
-				
-				//生成章节内容页
-				makeContext(files, file2, book, chapterName, i);
+				//System.out.println(file2.getName());
+				fileList.add(file2);
 			}
 		}
+		try{
+			fileList.sort((File f1, File f2) ->  Integer.valueOf(Integer.parseInt(f1.getName().split("_")[1].split(" ")[0].replace("第", "").replace("弟", "").replace("集", "").replace("章", "").replace("话", "").replace("喝酒", ""))).compareTo(
+					Integer.valueOf(Integer.parseInt((f2.getName().split("_")[1].split(" ")[0].replace("第", "").replace("话", "").replace("弟", "").replace("集", "").replace("章", "").replace("喝酒", "") )))));
+		}catch (Exception e) {
+			e.printStackTrace();
+			fileList.sort((File f1, File f2) ->  Integer.valueOf(Integer.parseInt(f1.getName().split("_")[0])).compareTo(
+					Integer.valueOf(Integer.parseInt((f2.getName().split("_")[0] )))));
+		}
+		
+		
+		for (int i = 0; i < fileList.size(); i++) {
+			File file2 = fileList.get(i);
+			//System.out.println(file2.getName());
+			String li = liSb.toString();
+			String chapterName =file2.getName().split("_")[1];
+			String chapterId = file2.getName().split("_")[0];
+			li = li.replace("【章节序号】", (i+1)+"");
+			li = li.replace("【章节内容】", "./"+(i+1)+".html");
+			li = li.replace("【章节名称】", chapterName);
+			ul.append(li);
+			//生成章节内容页
+			makeContext(files, file2, book, chapterName, i);
+		}
+		
 		
 		bookPage = bookPage.replace("【书籍目录】", ul.toString());
 		TxtUtil.writeTxt(ManhuaTest.filePath+"image/"+book.getBookpath()+"page.html", bookPage);

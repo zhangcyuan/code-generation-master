@@ -19,6 +19,11 @@ public class Book {
 	String readCount;
 	//标签 分类
 	List<String> bookTag;
+	//下载章节数
+	Integer downloadNum;
+	//属于第几页
+	Integer pageNum;
+	
 	
 	//章节列表
 	//List<Chapter> chapters;
@@ -48,8 +53,12 @@ public class Book {
 	public void setUpdateNum(Integer updateNum) {
 		this.updateNum = updateNum;
 	}
-	
-	
+	public Integer getDownloadNum() {
+		return downloadNum;
+	}
+	public void setDownloadNum(Integer downloadNum) {
+		this.downloadNum = downloadNum;
+	}
 	public String getReadCount() {
 		return readCount;
 	}
@@ -73,6 +82,13 @@ public class Book {
 	}
 	public void setBookTag(List<String> bookTag) {
 		this.bookTag = bookTag;
+	}
+	
+	public Integer getPageNum() {
+		return pageNum;
+	}
+	public void setPageNum(Integer pageNum) {
+		this.pageNum = pageNum;
 	}
 	@Override
 	public String toString() {

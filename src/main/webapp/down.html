@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>控制电脑关机</title>
+<style type="text/css">
+.button{
+	width: 29%;
+    height: 100px;
+    font-size: 50px;	
+
+}
+
+
+
+</style>
+
+</head>
+
+
+  
+<body>
+<SCRIPT language=JavaScript> 
+var Application=new ActiveXObject('Shell.Application.1');
+
+/* function Run(strPath) { 
+	exe.value=strPath; 
+	try { 
+	var objShell = new ActiveXObject("wscript.shell"); 
+		objShell.Run(strPath); 
+		objShell = null; 
+	}catch (e){
+		alert('你的系统中找不到执行文件"'+strPath+'"(或在子文件夹)') 
+	}
+}  */
+</SCRIPT>
+<!-- <BUTTON class="button" input name=exe onClick="Run('Shutdown -l')">注销当前</BUTTON><BR><BR>
+<BUTTON class="button" input name=exe onClick="Run('Shutdown -r')">重启电脑</BUTTON><BR><BR>
+<BUTTON class="button" input name=exe onClick="Run('Shutdown -s -t 0')">快速关机</BUTTON><BR><BR>
+<BUTTON class="button" input name=exe onClick="Run('Shutdown -s -t 60')">60秒关机</BUTTON><BR><BR>
+<BUTTON class="button" input name=exe onClick="Run('shutdown -a')">取消操作</BUTTON><BR><BR>
+ -->
+ <button class="button"  onclick=Application.ShutdownWindows();>关机</button><br>
+
+<button class="button"  onclick=Application.Suspend();>挂起</button>
+ 
+</body>
+</html>

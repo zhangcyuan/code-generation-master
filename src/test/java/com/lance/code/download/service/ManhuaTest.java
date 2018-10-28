@@ -8,6 +8,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -19,6 +26,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lance.code.generation.utils.DownLoadImgaeUtil;
 import com.lance.code.generation.utils.TxtUtil;
+import com.lance.code.thread.service.YybkRunable;
 
 /**
 * 漫画下载
@@ -27,6 +35,8 @@ import com.lance.code.generation.utils.TxtUtil;
 */
 public class ManhuaTest {
 	
+	
+	
 	//域名
 	static String domain = "http://x13043.sanby.xyz";
 	//书籍列表
@@ -34,17 +44,23 @@ public class ManhuaTest {
 	
 	//图片下载路径
     //static String filePath ="E:/HaimaApp/manhua/";
-	static String filePath = "D:/imagelist/manhua/";
+	public static String filePath = "D:/imagelist/manhua/";
+	
+	static Map<Integer,Book> bookMap = new HashMap<>();
+	
     
     //书籍信息 地址
     static String bookPath = filePath+"static/book.txt";
 	
 	public static void main(String[] args) throws IOException {
+		int threadNum = 10;
 		
+		ThreadPoolExecutor executor = new ThreadPoolExecutor(threadNum, 200, 120, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(200));
+		
+		//ExecutorService executor = new 
 		//页码总数
-		int pagenum = 1; //20
-		
-		
+		int pagenum = 25; //20
+		//CountDownLatch threadSignal = new 
 		File bookFile = new File(bookPath);
 		if(!bookFile.exists()){
 			bookFile.createNewFile();
@@ -55,7 +71,7 @@ public class ManhuaTest {
 		Type mtype = new TypeToken<Map<Integer, Book>>() {
         }.getType();
         Gson gson = new Gson();	
-        Map<Integer,Book> bookMap = gson.fromJson(lastbooks,mtype);
+        bookMap = gson.fromJson(lastbooks,mtype);
 		if(bookMap==null){
 			bookMap = new HashMap<>();
 		}
@@ -105,31 +121,58 @@ public class ManhuaTest {
 						book.setBookname(bookname);
 						book.setHref(href);
 						//新书则爬所有章节
-						book.setUpdateNum(0);
+						book.setDownloadNum(0);
+					}
+					book.setPageNum(i);
+					book.setUpdateNum(newNum);
+					if(book.getDownloadNum()>=book.getUpdateNum().intValue()){
+						continue;
 					}
 					book.setBookpath(book.getBookid()+"_"+book.getBookname()+"/");
 					//头图下载
 					//http://img.fox800.xyz/books/1528788134_1524466221_xxxxxx-210x297.jpg
 					DownLoadImgaeUtil.downImages(null, head_pic,null ,filePath+"image/"+book.getBookpath(),book.getBookname()+".jpg");
 					//旧书爬取更新的章节
-					parseBookDetail(book);
 					
-					book.setUpdateNum(newNum);
-					bookMap.put(bookId, book);
-					String json = gson.toJson(bookMap);
-					TxtUtil.writeTxt(bookPath, json);
-					//Thread.sleep(1000L);
-					break;
+					Thread t = new Thread(new ManhuaThread(book,null));
+					t.setName("线程--"+book.getBookname());
+					executor.execute(t);
+					//t.start();
+					//parseBookDetail(bookMap,book);
+//					bookMap.put(bookId, book);
+//					String json = gson.toJson(bookMap);
+//					TxtUtil.writeTxt(bookPath, json);
+					Thread.sleep(1000L);
+					//break;
 				}
+				
+//				while(threadSignal.getCount()>4){
+//					System.out.println("监控显示 还有"+ threadSignal.getCount() + " 个线程");
+//					Thread.sleep(2000);
+//				}
+				
+				 System.out.println("线程池中线程数目："+executor.getPoolSize()+"，队列中等待执行的任务数目："+
+			             executor.getQueue().size()+"，已执行完别的任务数目："+executor.getCompletedTaskCount());
+				
 				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 			
-			
-			
+		while((executor.getQueue().size()+executor.getPoolSize())<executor.getCompletedTaskCount()){
+			System.out.println("线程池中线程数目："+executor.getPoolSize()+"，队列中等待执行的任务数目："+
+		             executor.getQueue().size()+"，已执行完别的任务数目："+executor.getCompletedTaskCount());
+			try {
+				Thread.sleep(30*1000L);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
+		System.out.println("=====================线程执行完毕");
+		executor.shutdown();
+			
+	}
 	
 	
 	/**
@@ -137,7 +180,7 @@ public class ManhuaTest {
 	 * @param book
 	 * @param bookId
 	 */
-	public static void parseBookDetail(Book book){
+	public static void parseBookDetail(Map<Integer,Book> bookMap,Book book){
 		try{
 			Document document = Jsoup.connect(domain+book.getHref())
 			.header("Cookie", "link_follow_chapter_num=72hvvHQ%2Bt5v2JWWCEV7fkG0%3D; PHPSESSID=rf57ufnt3eoutr9v6nmfcj0qd3; x13043_user=M8J%2FmiWv6KByoopW4kUz9ldR1QEjkf0r1WE8xdJzlobJDSWnr%2BHjVlIoBGVv9wF99X0SSEYvO7YR77I9xz8OBILf%2BBLAwfauVcMqSNZuzsXHodmVpwcMk%2FRfMrlsu9ujvyJrEIYtT7XGM9rv1auuasqb%2B6O3F%2Bwsp%2F2bvVWoO3yo1zU%2BS3cJEIcm7Oe3mCKmHYv0bdjh3T56H6AsKQAy%2F95Hm4HFIZ4g8CSrMort1N3%2FvM4iImrTRMRiJ%2F6LxQd4cyudKLy1C7bb1xrYXpzJqq5%2F%2F%2FLL4KRock8uTEA5z8RCVIoGBgYOXsW5sYoD5VQbuwJAJKghRIh5WIO%2FwsdqI2rxHrbmlGp7mYitlmighXHSWK8HdT7j")
@@ -163,9 +206,10 @@ public class ManhuaTest {
 			String updateState =	document.select(".l-detail-span").get(0).text();
 			book.setUpdateState(updateState);
 			
+			Gson gson = new Gson();	
 			Elements chapters = document.select("ul>li>p.overhidden");
 			int index = 0;
-			/*List<Chapter> list = new ArrayList<>();
+			List<Chapter> list = new ArrayList<>();
 			for (Element element : chapters) {
 				Chapter cp = new Chapter();
 				index++;
@@ -176,11 +220,16 @@ public class ManhuaTest {
 				cp.setHref(href);
 				list.add(cp);
 				//判断章节大于上次章节 爬出图片
-				if(index>book.getUpdateNum()){
+				if(index>book.getDownloadNum()){
+					System.out.println(cp.getTitle());
 					parseChapterDetail(book, cp);
-					Thread.sleep(1000L);
+					book.setDownloadNum(index);
+					bookMap.put(book.getBookid(), book);
+					String json = gson.toJson(bookMap);
+					TxtUtil.writeTxt(bookPath, json);
+					
 				}
-			}*/
+			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -204,7 +253,8 @@ public class ManhuaTest {
 				String img_url = element.attr("data-lazyload");
 				img_url = img_url.substring(0, img_url.indexOf("?"));
 				//http://img.fox800.xyz/images/book_43_chapter_1993_22.jpg
-				DownLoadImgaeUtil.downImages(filePath, img_url, "http://img.fox800.xyz/images/",filePath+book.getBookid()+"_"+book.getBookname()+"/"+cp.getChapter_id()+"_"+cp.getTitle()+"/",null);
+				DownLoadImgaeUtil.downImages(filePath, img_url, "http://img.fox800.xyz/images/",filePath+"image/"+book.getBookid()+"_"+book.getBookname()+"/"+cp.getChapter_id()+"_"+cp.getTitle()+"/",null);
+				Thread.sleep(10L);
 			}
 			
 		} catch (Exception e) {

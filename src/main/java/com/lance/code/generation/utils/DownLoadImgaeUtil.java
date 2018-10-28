@@ -7,6 +7,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import com.lance.code.download.service.ManhuaTest;
+
 public class DownLoadImgaeUtil {
 	
 	/**
@@ -43,15 +45,19 @@ public class DownLoadImgaeUtil {
             if (!files.exists()) {  
                 files.mkdirs();  
             }  
+            File file = new File(lastFilePath);
+            if(file.exists()){
+            	return;
+            }
+            
             //获取下载地址  
             URL url = new URL(imgUrl);  
             //链接网络地址  
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();  
-            connection.setReadTimeout(2*60*1000);
+            connection.setReadTimeout(30*1000);
             //获取链接的输出流  
             InputStream is = connection.getInputStream();  
             //创建文件，fileName为编码之前的文件名  
-            File file = new File(lastFilePath);  
             //根据输入流写入文件  
             FileOutputStream out = new FileOutputStream(file);  
             int i = 0;  
@@ -61,7 +67,15 @@ public class DownLoadImgaeUtil {
             out.close();  
             is.close();  
         } catch (Exception e) {  
+        	System.out.println(imgUrl);
+        	TxtUtil.addTxt(ManhuaTest.filePath+"lose.txt", imgUrl+"=="+lastFilePath);
             e.printStackTrace();  
-        }  
+        }finally {
+			try {
+				Thread.sleep(1000L);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		} 
     }  
 }
