@@ -44,7 +44,7 @@ public class ManhuaTest {
 	
 	//图片下载路径
     //static String filePath ="E:/HaimaApp/manhua/";
-	public static String filePath = "D:/imagelist/manhua/";
+	public static String filePath = "F:/manhua/";
 	
 	static Map<Integer,Book> bookMap = new HashMap<>();
 	
@@ -53,13 +53,13 @@ public class ManhuaTest {
     static String bookPath = filePath+"static/book.txt";
 	
 	public static void main(String[] args) throws IOException {
-		int threadNum = 10;
-		
-		ThreadPoolExecutor executor = new ThreadPoolExecutor(threadNum, 200, 120, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(200));
+		int threadNum = 8;
+		int threadTotle = 1000;
+		ThreadPoolExecutor executor = new ThreadPoolExecutor(threadNum, threadTotle, 120, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(threadTotle));
 		
 		//ExecutorService executor = new 
 		//页码总数
-		int pagenum = 25; //20
+		int pagenum = 50; //20
 		//CountDownLatch threadSignal = new 
 		File bookFile = new File(bookPath);
 		if(!bookFile.exists()){
@@ -131,7 +131,7 @@ public class ManhuaTest {
 					book.setBookpath(book.getBookid()+"_"+book.getBookname()+"/");
 					//头图下载
 					//http://img.fox800.xyz/books/1528788134_1524466221_xxxxxx-210x297.jpg
-					DownLoadImgaeUtil.downImages(null, head_pic,null ,filePath+"image/"+book.getBookpath(),book.getBookname()+".jpg");
+					DownLoadImgaeUtil.downImages(null, head_pic,null ,filePath+"image/"+book.getBookpath(),book.getBookname().trim()+".jpg");
 					//旧书爬取更新的章节
 					
 					Thread t = new Thread(new ManhuaThread(book,null));
@@ -160,7 +160,7 @@ public class ManhuaTest {
 			}
 		}
 			
-		while((executor.getQueue().size()+executor.getPoolSize())<executor.getCompletedTaskCount()){
+		while(executor.getPoolSize()>1||(executor.getQueue().size()+executor.getPoolSize())<executor.getCompletedTaskCount()){
 			System.out.println("线程池中线程数目："+executor.getPoolSize()+"，队列中等待执行的任务数目："+
 		             executor.getQueue().size()+"，已执行完别的任务数目："+executor.getCompletedTaskCount());
 			try {
@@ -254,7 +254,7 @@ public class ManhuaTest {
 				img_url = img_url.substring(0, img_url.indexOf("?"));
 				//http://img.fox800.xyz/images/book_43_chapter_1993_22.jpg
 				DownLoadImgaeUtil.downImages(filePath, img_url, "http://img.fox800.xyz/images/",filePath+"image/"+book.getBookid()+"_"+book.getBookname()+"/"+cp.getChapter_id()+"_"+cp.getTitle()+"/",null);
-				Thread.sleep(10L);
+				Thread.sleep(100L);
 			}
 			
 		} catch (Exception e) {

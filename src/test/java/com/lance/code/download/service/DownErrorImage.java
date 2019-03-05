@@ -19,7 +19,7 @@ public class DownErrorImage {
 	public static void main(String[] args) {
 		 
 		
-		List<String> list = TxtUtil.readLine("D:/imagelist/manhua/lose.txt");
+		List<String> list = TxtUtil.readLine("F:/manhua/lose.txt");
 		for (String string : list) {
 			//http://img.fox800.xyz/books/1528788779_1522653077_QQ截图20180326181403 拷贝.jpg==D:/imagelist/manhua/image/2_爱上男闺蜜/爱上男闺蜜.jpg
 			String[] imgs = string.split("==");
@@ -30,11 +30,11 @@ public class DownErrorImage {
 			String fileName = imgs[1].substring(indexOf+1, imgs[1].length());
 			String dirs = imgs[1].substring(0, indexOf+1);
 			String imgurl=imgs[0];
-			try {
+			/*try {
 				imgurl = domain+URLEncoder.encode(param,"utf-8");
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
-			}
+			}*/
 			System.out.println(imgurl);
 			down(imgurl,dirs,fileName);
 		}
@@ -44,12 +44,10 @@ public class DownErrorImage {
 	
 	static void down(String imgUrl,String dirs,String fileName){
 		 try {  
-			 String regEx="[`~!@#$%^&*()+=|{}':;',\\[\\].<>?~！@#￥%……&*（）\"——+|{}‘；：”“’。，、p]"; 
+			/* String regEx="[`~!@#$%^&*()+=|{}':;',\\[\\].<>?~！@#￥%……&*（）\"——+|{}‘；：”“’。，、p]"; 
 				Pattern p = Pattern.compile(regEx); 
 				Matcher m = p.matcher(dirs);
-				dirs =  m.replaceAll("").trim();
-			 
-			 
+				dirs =  m.replaceAll("").trim();*/
 	            //创建文件目录  
 	            File files = new File(dirs);  
 	            if (!files.exists()) {  
@@ -83,7 +81,7 @@ public class DownErrorImage {
 	            e.printStackTrace();  
 	        }finally {
 				try {
-					Thread.sleep(1000L);
+					Thread.sleep(10L);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

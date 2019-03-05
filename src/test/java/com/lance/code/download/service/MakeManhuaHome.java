@@ -101,8 +101,10 @@ public class MakeManhuaHome {
 			}
 		}
 		try{
-			fileList.sort((File f1, File f2) ->  Integer.valueOf(Integer.parseInt(f1.getName().split("_")[1].split(" ")[0].replace("第", "").replace("弟", "").replace("集", "").replace("章", "").replace("话", "").replace("喝酒", ""))).compareTo(
-					Integer.valueOf(Integer.parseInt((f2.getName().split("_")[1].split(" ")[0].replace("第", "").replace("话", "").replace("弟", "").replace("集", "").replace("章", "").replace("喝酒", "") )))));
+			fileList.sort((File f1, File f2) -> {
+				return Integer.valueOf(f1.getName().split("_")[0]).compareTo(Integer.valueOf(f2.getName().split("_")[0]));
+			});
+			
 		}catch (Exception e) {
 			e.printStackTrace();
 			fileList.sort((File f1, File f2) ->  Integer.valueOf(Integer.parseInt(f1.getName().split("_")[0])).compareTo(
@@ -121,7 +123,7 @@ public class MakeManhuaHome {
 			li = li.replace("【章节名称】", chapterName);
 			ul.append(li);
 			//生成章节内容页
-			makeContext(files, file2, book, chapterName, i);
+			makeContext(files, file2, book, chapterName, (i+1));
 		}
 		
 		
@@ -174,8 +176,32 @@ public class MakeManhuaHome {
 		//D:\imagelist\manhua\image\43_超级吸引力\1993_第1话 获取能力
 		StringBuffer imgsb =new StringBuffer();
 		File[] imageFiles =	thisFile.listFiles();
-		for (int j = 0; j < imageFiles.length; j++) {
-			File image = imageFiles[j];
+		if(imageFiles.length==0){
+			System.out.println("这个章节没图片：=============="+book.getBookname()+"=="+chapterName);
+		}
+		
+		List<File> fileList = new ArrayList<>();
+		for (File file2 : imageFiles) {
+			if(!file2.isDirectory()){
+				fileList.add(file2);
+			}
+		}
+		try{
+			fileList.sort((File f1, File f2) -> {
+				String[] len1 = f1.getName().split("_");
+				String[] len2 = f2.getName().split("_");
+				String str1 = (len1[len1.length-1]).split("\\.")[0];
+				String str2 = (len2[len2.length-1]).split("\\.")[0];
+				return Integer.valueOf(str1).compareTo(Integer.valueOf(str2));
+			});
+		}catch (Exception e) {
+			e.printStackTrace();
+			fileList.sort((File f1, File f2) ->  f1.getName().compareTo(f2.getName()));
+		}
+		
+		
+		for (int j = 0; j < fileList.size(); j++) {
+			File image = fileList.get(j);
 			String img = "<img data-original='./"+thisFile.getName()+"/"+image.getName()+"' src='../../static/default.jpg' width='100%' data-lazyload-id='"+j+"'>";
 			imgsb.append(img);
 			

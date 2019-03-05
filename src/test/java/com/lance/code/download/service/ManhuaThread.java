@@ -106,6 +106,7 @@ public class ManhuaThread extends Thread{
 			}
 			
 		} catch (Exception e) {
+			TxtUtil.addTxt(ManhuaTest.filePath+"book.txt", book.getPageNum()+"=="+book.getHref()+"=="+book.getBookname()+"=="+book.getBookpath());
 			e.printStackTrace();
 		}finally {
 //			threadsSignal.countDown();
@@ -114,15 +115,53 @@ public class ManhuaThread extends Thread{
 		}
 	}
 	
+	
+	public static void main(String[] args) {
+		ManhuaThread thread = new ManhuaThread(null, null);
+		List<String> stringlist =	TxtUtil.readLine(ManhuaTest.filePath+"chapter.txt");
+		for (String string : stringlist) {
+			try {
+				String[] infos =	string.split("==");
+				Book book = new Book();
+				book.setPageNum(Integer.parseInt(infos[0]));
+				book.setBookname(infos[2]);
+				book.setBookid(Integer.parseInt(infos[1]));
+				
+				Chapter cp = new Chapter();
+				cp.setChapter_id(infos[4]);
+				cp.setTitle(infos[5]);
+				cp.setHref(infos[3]);
+				thread.parseChapterDetail(book, cp);
+				try {
+					Thread.sleep(300);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println(string);
+			}
+			
+		}
+		
+	}
+	
 	/**
 	 * 读取章节信息 并下载图片
 	 * @param book
 	 * @param cp
 	 */
 	public void parseChapterDetail(Book book,Chapter cp){
+		String url = "";
+		if(cp.getHref().contains(ManhuaTest.domain)){
+			url = cp.getHref();
+		}else{
+			url = ManhuaTest.domain+cp.getHref();
+		}
+		
 		try{
-			System.out.println("开始下载：==第"+book.getPageNum()+"页=="+book.getBookid()+"=="+book.getBookname()+"===="+cp.getTitle());
-			Document document = Jsoup.connect(ManhuaTest.domain+cp.getHref())
+			System.out.println("开始下载：==第"+book.getPageNum()+"页=="+book.getBookid()+"=="+book.getBookname()+"=="+cp.getTitle());
+			Document document = Jsoup.connect(url)
 			.header("Cookie", "link_follow_chapter_num=72hvvHQ%2Bt5v2JWWCEV7fkG0%3D; PHPSESSID=rf57ufnt3eoutr9v6nmfcj0qd3; x13043_user=M8J%2FmiWv6KByoopW4kUz9ldR1QEjkf0r1WE8xdJzlobJDSWnr%2BHjVlIoBGVv9wF99X0SSEYvO7YR77I9xz8OBILf%2BBLAwfauVcMqSNZuzsXHodmVpwcMk%2FRfMrlsu9ujvyJrEIYtT7XGM9rv1auuasqb%2B6O3F%2Bwsp%2F2bvVWoO3yo1zU%2BS3cJEIcm7Oe3mCKmHYv0bdjh3T56H6AsKQAy%2F95Hm4HFIZ4g8CSrMort1N3%2FvM4iImrTRMRiJ%2F6LxQd4cyudKLy1C7bb1xrYXpzJqq5%2F%2F%2FLL4KRock8uTEA5z8RCVIoGBgYOXsW5sYoD5VQbuwJAJKghRIh5WIO%2FwsdqI2rxHrbmlGp7mYitlmighXHSWK8HdT7j")
 			.header("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/16A366 MicroMessenger/6.7.2 NetType/WIFI Language/zh_CN")
 			.ignoreContentType(true).get();
@@ -135,19 +174,16 @@ public class ManhuaThread extends Thread{
 				int indexOf = img_url.lastIndexOf("/");
 				String fileName = img_url.substring(indexOf+1, img_url.length());
 				
-				String regEx="[`~!@#$%^&*()+=|{}':;',\\[\\].<>?~！@#￥%……&*\"（）——+|{}‘；：”“’。，、p]"; 
+				String regEx="[`~!@#$%^&*()+=|{}':;',\\[\\]./<>?~！@#￥%……&*\"（）——+|{}‘；：”“’。，、p]"; 
 				Pattern p = Pattern.compile(regEx); 
 				Matcher m = p.matcher(cp.getTitle());
-				String title =  m.replaceAll("").trim();
-				//http://img.fox800.xyz/images/book_43_chapter_1993_22.jpg
-				this.downImages(null, img_url, null,ManhuaTest.filePath+"image/"+book.getBookid()+"_"+book.getBookname()+"/"+cp.getChapter_id()+"_"+title+"/",fileName);
-				Thread.sleep(10L);
+				String title =  m.replaceAll("");
+				this.downImages(null, img_url, null,ManhuaTest.filePath+"image/"+book.getBookid()+"_"+book.getBookname().trim()+"/"+cp.getChapter_id()+"_"+(title.trim())+"/",fileName.trim());
+				Thread.sleep(20L);
 			}
 			
-			
-			
-			
 		} catch (Exception e) {
+			TxtUtil.addTxt(ManhuaTest.filePath+"chapter.txt", book.getPageNum()+"=="+book.getBookid()+"=="+book.getBookname()+"=="+url+"=="+cp.getChapter_id()+"=="+cp.getTitle());
 			e.printStackTrace();
 		}
 	}
@@ -160,9 +196,6 @@ public class ManhuaThread extends Thread{
 	
 	public void downImages(String filePath,String imgUrl,String replaceStr,String userPath,String fileName) 
 			throws UnsupportedEncodingException {  
-		//http://tuigirl-1254818389.cosbj.myqcloud.com/picture/playboy/286/0.jpg
-		//E:/HaimaApp/aisipic/playboy/286/0.jpg
-        //图片url中的前面部分：例如"http://images.csdn.net/"  
 		String lastFilePath ="";
 		String dirs = "";
 		if(userPath==null){
@@ -218,6 +251,7 @@ public class ManhuaThread extends Thread{
             out.close();  
             is.close();  
         } catch (Exception e) {  
+        	e.printStackTrace();
         	TxtUtil.addTxt(ManhuaTest.filePath+"lose.txt", imgUrl+"=="+lastFilePath);
         	System.out.println(imgUrl);
             e.printStackTrace();  

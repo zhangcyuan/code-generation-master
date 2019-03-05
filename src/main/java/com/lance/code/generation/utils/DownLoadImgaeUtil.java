@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import com.lance.code.download.service.ManhuaTest;
 
@@ -49,9 +50,21 @@ public class DownLoadImgaeUtil {
             if(file.exists()){
             	return;
             }
-            
+            String domain = "";
+            String param = "";
+            int firstX  = 0 ;
+            if(imgUrl.contains("http")){
+            	firstX  = imgUrl.replace("://", "").indexOf("/");
+            	domain =  imgUrl.substring(0, firstX+4);
+            	param =  imgUrl.substring(firstX+4,imgUrl.length());
+            }else{
+            	firstX = imgUrl.indexOf("/");
+            	domain =  imgUrl.substring(0, firstX+1);
+            	param =  imgUrl.substring(firstX+1,imgUrl.length());
+            }
+            String downurl = domain + URLEncoder.encode(param,"utf-8");
             //获取下载地址  
-            URL url = new URL(imgUrl);  
+            URL url = new URL(downurl);  
             //链接网络地址  
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();  
             connection.setReadTimeout(30*1000);
@@ -68,7 +81,7 @@ public class DownLoadImgaeUtil {
             is.close();  
         } catch (Exception e) {  
         	System.out.println(imgUrl);
-        	TxtUtil.addTxt(ManhuaTest.filePath+"lose.txt", imgUrl+"=="+lastFilePath);
+        	TxtUtil.addTxt(ManhuaTest.filePath+"main.txt", imgUrl+"=="+lastFilePath);
             e.printStackTrace();  
         }finally {
 			try {
@@ -78,4 +91,12 @@ public class DownLoadImgaeUtil {
 			}
 		} 
     }  
+	
+	public static void main(String[] args) {
+		try {
+			DownLoadImgaeUtil.downImages(null, "http://img.fox800.xyz/books/1545028656_1515464336_情敌不好惹%20%20横版封面(无字）.jpg", null, "F:/imagelist/manhua/image/367_莫少逼婚，新妻难招架/", "莫少逼婚，新妻难招架_main.jpg");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
 }
